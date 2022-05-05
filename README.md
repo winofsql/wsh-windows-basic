@@ -8,4 +8,4 @@
 <a href="https://docs.microsoft.com/en-us/windows/desktop/shell/shell-reference-bumper" target="_blank">Shell Reference</a>\
 <a href="https://docs.microsoft.com/en-us/windows/desktop/shell/objects" target="_blank">Shell Objects for Scripting and Microsoft Visual Basic</a>\
 <a href="https://docs.microsoft.com/en-us/windows/desktop/shell/shell" target="_blank">Shell object</a>\
-<a href="https://docs.microsoft.com/en-us/windows/desktop/shell/shell-browseforfolder" target="_blank">Shell.BrowseForFolder method</a>\
+<a href="https://docs.microsoft.com/en-us/windows/desktop/shell/shell-browseforfolder" target="_blank">Shell.BrowseForFolder method</a>
