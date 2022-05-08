@@ -14,5 +14,5 @@
 
 ## WSH
 
-[WScript オブジェクト](https://docs.microsoft.com/ja-jp/previous-versions/windows/scripting/cc364475(v=msdn.10))
+[WScript オブジェクト](https://docs.microsoft.com/ja-jp/previous-versions/windows/scripting/cc364475(v=msdn.10))\
 [WshShell オブジェクト](https://docs.microsoft.com/ja-jp/previous-versions/windows/scripting/cc364436(v=msdn.10))
