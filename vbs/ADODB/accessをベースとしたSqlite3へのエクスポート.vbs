@@ -4,19 +4,15 @@ strConnectBaseAccess = _
     "Data Source=C:\app\workspace\販売管理.accdb" & ";"
 
 ' MySQL ODBC 8.0 Unicode Driver
-strConnectMySQL = _
+strConnectSqlite3 = _
     "[ODBC;Provider=MSDASQL" & _
-    ";Driver={MySQL ODBC 8.0 Unicode Driver}" & _
-    ";SERVER=localhost" & _
-    ";DATABASE=lightbox" & _
-    ";UID=root" & _
-    ";PWD=" & _
-    ";Charset=cp932" & _
+    ";Driver={SQLite3 ODBC Driver}" & _
+    ";DATABASE=C:\app\workspace\lightbox.sqlite3" & _
     ";].社員マスタ" & CLng(Timer)
 
 ' 処理
 Set Cn = Wscript.CreateObject("ADODB.Connection")
 Cn.Open strConnectBaseAccess
-Query = "select * into " & strConnectMySQL & " from 社員マスタ"
+Query = "select * into " & strConnectSqlite3 & " from 社員マスタ"
 Cn.Execute Query
 Cn.Close()
