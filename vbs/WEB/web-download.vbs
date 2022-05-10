@@ -1,7 +1,6 @@
 Set objSrvHTTP = Wscript.CreateObject("Msxml2.ServerXMLHTTP")
 Set Stream = Wscript.CreateObject("ADODB.Stream")
 
-
 webUrlFolder = "https://winofsql.jp/image/daz/"
 webFileName = "2021-08-03-1.jpg"
 savePath = ".\" & "2021-08-03-1.jpg"
