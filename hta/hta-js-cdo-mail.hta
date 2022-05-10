@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta charset="utf-8">
+
+<title></title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<style>
+#body {
+    width: 400px;
+    height: 200px;
+}
+</style>
+<script language='jscript'>
+var cdo = new ActiveXObject("CDO.Message");
+var server = "smtp.lolipop.jp";
+var port = 465;
+var user = "ユーザ";
+var from = "メールアドレス";
+var pass = "パスワード";
+
+$(function(){
+
+
+    $("#btn").on( "click", function() {
+
+        user = $("#account").val();
+        from = $("#account").val();
+        pass = $("#pass").val();
+
+        // ***************************
+        // 自分のアドレスと宛先
+        // ***************************
+        cdo.From = from
+        cdo.To = $("#mail").val();
+
+        // ***************************
+        // 件名と本文
+        // ***************************
+        cdo.Subject = $("#subject").val();
+        cdo.Textbody = $("#body").val();
+
+        // ***************************
+        // 設定
+        // ***************************
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2;
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpserver") = server;
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = port;
+
+        // ポートが 465 の場合は true
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = true;
+
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = 1
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendusername") = user;
+        cdo.Configuration.Fields.Item("http://schemas.microsoft.com/cdo/configuration/sendpassword") = pass;
+
+        // ***************************
+        // 設定
+        // ***************************
+        cdo.Configuration.Fields.Update();
+
+        // ***************************
+        // 送信
+        // ***************************
+        try {
+            cdo.Send();
+            alert("メールを送信しました");
+        }
+        catch (e) {
+            alert("cdo.Send() でエラーが発生しました");
+        }
+
+    });
+
+});
+</script>
+</head>
+<body>
+<h3 class="alert alert-primary">HTA サンプル</h3>
+<div id="content" class="m-3">
+<input id="btn" name="btn" type="button" value="実行" class="btn btn-primary">
+<div class="mt-3">
+    <input type="text" id="account" size="60"> : account
+</div>
+<div>
+    <input type="password" id="pass" size="60"> : pass
+</div>
+<div>
+    <input type="text" id="subject" size="60"> : 件名
+</div>
+<div>
+    <input type="text" id="mail" size="60"> : mail
+</div>
+<div>
+     <textarea id="body"></textarea>
+</div>
+</div>
+</body>
+</html>
