@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta charset="utf-8">
+<title>utf-8 ADO 問合せ処理( MySQL )</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+
+<!-- newObject 関数の定義 -->
+<script src="hta.js"></script>
+
+<script>
+// ********************************************************
+// ADO オブジェクト
+// 3 : クライアント側カーソル
+// https://msdn.microsoft.com/ja-jp/library/cc389782.aspx
+// ********************************************************
+var cn = newObject("ADODB.Connection");	
+cn.CursorLocation = 3;
+var rs = newObject("ADODB.Recordset");
+
+// ********************************************************
+// 接続文字列 : ODBC用 : MySQL
+// ********************************************************
+var connection_string = "Provider=MSDASQL;Driver={MySQL ODBC 8.0 Unicode Driver};Server=localhost;database=lightbox;uid=root;pwd=;";
+
+// ***********************
+// エラー制御
+// ***********************
+var error_flg = false;
+
+// ***********************
+// 実行 SQL
+// ***********************
+var query = "select * from 社員マスタ";
+
+$(function(){
+
+    // **************************************
+    // ウインドウの位置とサイズ
+    // ※ hta.js
+    // **************************************
+    centerWindow( 1200, 800 );
+
+    // **************************************
+    // ADO 処理( ここから )
+    // **************************************
+    try {
+        // ***********************
+        // DB 接続
+        // ***********************
+        cn.open( connection_string );
+    }
+    catch (e) {
+        error_flg = true;
+        alert(e.description);
+    }
+    
+    if ( !error_flg ) {
+
+        try {
+            // ***********************
+            // レコードセット取得
+            // ***********************
+            rs.open( query, cn );
+        }
+        catch (e) {
+            error_flg = true;
+            alert(e.description);
+        }
+
+        // エラーなし
+        if ( !error_flg ) {
+        
+            var table_body = $("#tbl");
+            // 新しい行オブジェクト
+            var row_unit = $("<tr></tr>");
+
+            // ***********************
+            // タイトル部用、列名取得
+            // ***********************
+            for( loop_idx = 0; loop_idx < rs.fields.count; loop_idx++ ) {
+                $("<th></th>")
+                    .text( rs.fields(loop_idx).name )
+                    .appendTo( row_unit );
+            }
+            row_unit.appendTo( table_body );
+
+
+            // ***********************
+            // 行取得ループ
+            // ***********************
+            while( !rs.EOF ) {
+
+                // 新しい行オブジェクト
+                row_unit = $("<tr></tr>");
+                
+                
+                // *********************************************
+                // 列オブジェクトを作成して行オブジェクトに追加
+                // *********************************************
+                $("<td></td>")
+                    .text( rs.fields("社員コード").value )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("氏名").value )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("フリガナ").value )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("所属").value )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("性別").value )
+                    .appendTo( row_unit );
+                    
+                date_work = new Date( rs.fields("作成日").value );
+                date_string = date_work.getFullYear() + "/" + (date_work.getMonth()+1) + "/" + date_work.getDate();
+                $("<td></td>")
+                    .text( date_string )
+                    .appendTo( row_unit );
+
+                date_work = new Date( rs.fields("更新日").value );
+                date_string = date_work.getFullYear() + "/" + (date_work.getMonth()+1) + "/" + date_work.getDate();
+                $("<td></td>")
+                    .text( date_string )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("給与").value )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("手当").value )
+                    .appendTo( row_unit );
+
+                $("<td></td>")
+                    .text( rs.fields("管理者").value )
+                    .appendTo( row_unit );
+                    
+                date_work = new Date( rs.fields("生年月日").value );
+                date_string = date_work.getFullYear() + "/" + (date_work.getMonth()+1) + "/" + date_work.getDate();
+                $("<td></td>")
+                    .text( date_string )
+                    .appendTo( row_unit );
+
+                // 行オブジェクトを テーブルオブジェクトに追加
+                row_unit.appendTo( table_body );
+
+                // ***********************
+                // 次の行を取得
+                // ***********************
+                rs.MoveNext();
+            }
+            
+            // ***********************
+            // レコードセットを閉じる
+            // ***********************
+            rs.close();
+        
+        }
+
+        // ***********************
+        // 接続解除
+        // ***********************
+        cn.close();
+    }
+    
+    // ***********************
+    // オブジェクトの解放
+    // ***********************
+    cn = "";
+    // **************************************
+    // ADO 処理( ここまで )
+    // **************************************
+
+    // **************************************
+    // テーブルに対する処理
+    // **************************************
+    $("#tbl tr").each(function(idx){
+
+        // **************************************
+        // イベント登録
+        // **************************************
+        $(this).on("dblclick", function(idx){
+
+            var text = "";
+
+            $(this).find("td").each(function(idx){
+                text += idx + ":" + $(this).text() + " ";
+            });
+
+            $("#result").text( text );
+
+        });
+
+        // **************************************
+        // タイトル部分とデータ部分の右寄せ
+        // **************************************
+        $(this).find("td,th").each(function(idx){
+
+            switch( idx ) {
+                case 7:
+                    $(this).css({"text-align": "right" });
+                    break;
+                case 8:
+                    $(this).css({"text-align": "right" });
+                    break;
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+<style>
+* {
+    font-family: メイリオ;
+}
+
+/* ****************************
+1) 列のカーソルは常に矢
+2) 改行コードを有効
+******************************/
+td,th {
+    cursor: default!important;
+    white-space: pre;
+}
+
+/* ****************************
+テーブル内のデータを選択不可
+( ダブルクリック対応 )
+******************************/
+#tbl {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+/* ****************************
+スクロール無しの状態時の
+最上部にデータ表示場所を用意
+******************************/
+table {
+    margin-top: 36px;
+}
+
+/* ****************************
+ダブルクリック時に内容を表示
+するブロックの表示方法
+******************************/
+#result {
+    font-weight: bold;	/* 太文字 */
+    color: navy;	/* 文字色 */
+    position: fixed;	/* 表示位置固定 */
+    height: 34px;	/* ブロック高さ */
+    background-color: #fff;	/* ブロック背景色 */
+}
+
+</style>
+</head>
+<body>
+<div id="content" class="m-4">
+
+    <!-- ダブルクリックの結果を表示する / fixed で位置固定 -->
+    <div id="result"></div>
+
+    <table class="table table-hover">
+        <tbody id="tbl">
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>
